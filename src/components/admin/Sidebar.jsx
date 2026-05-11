@@ -42,7 +42,7 @@ export default function Sidebar() {
         onClick={handleLogout}
         className="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-gray-800 transition"
       >
-        🚪 Cerrar sesión
+         Cerrar sesión
       </button>
     </aside>
   );
