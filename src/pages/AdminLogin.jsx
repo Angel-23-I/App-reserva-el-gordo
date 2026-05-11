@@ -10,16 +10,33 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { error } = await signInAdmin(email, password);
-    if (error) return alert(error.message);
+    if (error) {
+      alert("Error de autenticación: " + error.message);
+      return;
+    }
     navigate("/admin/dashboard");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Ingresar al panel</h2>
-      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Contraseña" />
-      <button type="submit">Ingresar</button>
-    </form>
+    <div className="login-page">
+      <h2>Panel de Administración · Comidas Rápidas The Gordo</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Correo del administrador"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Contraseña"
+          required
+        />
+        <button type="submit">Ingresar</button>
+      </form>
+    </div>
   );
 }
