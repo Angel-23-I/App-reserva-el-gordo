@@ -13,7 +13,7 @@ export default function GuestCountStep({ onNext }) {
           onClick={() => setGuestCount((c) => Math.max(1, c - 1))}
           className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xl font-bold hover:bg-gray-200 transition"
         >−</button>
-        <span className="text-4xl font-bold text-red-600 w-12">{guestCount}</span>
+        <span className="text-4xl font-bold text-orange-600 w-12">{guestCount}</span>
         <button
           onClick={() => setGuestCount((c) => c + 1)}
           className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xl font-bold hover:bg-gray-200 transition"
@@ -21,7 +21,7 @@ export default function GuestCountStep({ onNext }) {
       </div>
       <button
         onClick={() => onNext(guestCount)}
-        className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition"
+        className="w-full bg-orange-400 hover:bg-orange-500 text-black font-semibold py-3 rounded-xl transition"
       >
         Ver mesas disponibles →
       </button>

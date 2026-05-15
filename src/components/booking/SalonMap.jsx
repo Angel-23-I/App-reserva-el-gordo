@@ -1,90 +1,108 @@
-// src/components/booking/SalonMap.jsx
 import TableCard from "./TableCard";
 
 export default function SalonMap({
-  mesas, guestCount, selectedTables, onSelectTable,
-  onContinue, totalCapacidad, necesitaVariasMesas, onBack
+  mesas,
+  guestCount,
+  fecha,
+  hora,
+  occupiedTableIds = [],
+  selectedTables,
+  onSelectTable,
+  onContinue,
+  totalCapacidad,
+  capacidadCompleta,
+  onBack,
 }) {
-  const disponibles = mesas.filter((m) => m.estado === "disponible");
-  const capacidadOk = totalCapacidad >= guestCount;
+  const seleccionIds = new Set(selectedTables.map((m) => m.id));
+  const ocupadasIds = new Set(occupiedTableIds);
+
+  const mesasVisuales = mesas.map((mesa) => {
+    let visualEstado = mesa.estado;
+
+    if (ocupadasIds.has(mesa.id)) {
+      visualEstado = "ocupada";
+    }
+
+    return { ...mesa, visualEstado };
+  });
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-800 text-center mb-1">Elige tu mesa</h2>
-      <p className="text-gray-500 text-sm text-center mb-4">
-        Reserva para <strong>{guestCount} persona{guestCount > 1 ? "s" : ""}</strong>
-      </p>
-
-      {/* Aviso si necesita varias mesas */}
-      {necesitaVariasMesas && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 mb-4 text-sm text-yellow-800 text-center">
-          ⚠️ No hay una sola mesa con capacidad para {guestCount} personas.
-          <strong> Selecciona varias mesas</strong> para completar el grupo.
+    <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-800">Selecciona tus mesas</h2>
+          <p className="text-gray-500 mt-1">
+            {fecha} · {hora} · Grupo de {guestCount} personas
+          </p>
         </div>
-      )}
 
-      {/* Barra de capacidad acumulada */}
-      {selectedTables.length > 0 && (
-        <div className="mb-4 bg-gray-50 rounded-xl px-4 py-3 flex flex-col gap-1">
-          <div className="flex justify-between text-xs font-semibold text-gray-600 mb-1">
-            <span>Capacidad acumulada</span>
-            <span className={capacidadOk ? "text-green-600" : "text-red-500"}>
-              {totalCapacidad} / {guestCount} personas
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="min-w-70 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-2">Capacidad acumulada</p>
+          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div
-              className={`h-2 rounded-full transition-all ${capacidadOk ? "bg-green-500" : "bg-red-400"}`}
+              className={`h-3 ${capacidadCompleta ? "bg-green-500" : "bg-red-400"}`}
               style={{ width: `${Math.min((totalCapacidad / guestCount) * 100, 100)}%` }}
             />
           </div>
+          <p className={`text-xs mt-2 ${capacidadCompleta ? "text-green-600" : "text-red-500"}`}>
+            {capacidadCompleta
+              ? "Ya cubriste la capacidad mínima."
+              : "Selecciona una o más mesas para completar el grupo."}
+          </p>
         </div>
-      )}
-
-      {/* Leyenda */}
-      <div className="flex justify-center gap-6 text-xs mb-4">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-400 inline-block" /> Disponible</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-red-400 inline-block" /> Ocupada</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-gray-300 inline-block" /> Bloqueada</span>
       </div>
 
-      {/* Grid de mesas */}
-      <div className="bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 min-h-48">
-        {disponibles.length === 0 ? (
-          <p className="text-center text-gray-400 py-10">No hay mesas disponibles.</p>
-        ) : (
-          <div className="flex flex-wrap gap-4 justify-center">
-            {mesas.map((mesa) => (
+      <div className="mb-4 flex flex-wrap gap-3 text-xs font-medium">
+        <span className="px-3 py-1 rounded-full bg-green-50 text-green-700 border border-green-200">
+          Disponible
+        </span>
+        <span className="px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">
+          Ocupada
+        </span>
+        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+          Bloqueada
+        </span>
+        <span className="px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200">
+          Seleccionada
+        </span>
+      </div>
+
+      <div className="bg-linear-to-b from-gray-50 to-white rounded-3xl border border-gray-200 p-6 md:p-8 min-h-105">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 place-items-center">
+          {mesasVisuales.map((mesa) => {
+            const selected = seleccionIds.has(mesa.id);
+            const isOcupadaByTime = mesa.visualEstado === "ocupada";
+            const isBlocked = mesa.visualEstado === "bloqueada";
+            const disabled = isOcupadaByTime || isBlocked || (capacidadCompleta && !selected);
+
+            return (
               <TableCard
                 key={mesa.id}
-                mesa={mesa}
-                selected={selectedTables.some((m) => m.id === mesa.id)}
+                mesa={{ ...mesa, estado: mesa.visualEstado }}
+                selected={selected}
                 onSelect={onSelectTable}
-                disabled={mesa.estado !== "disponible"}
+                disabled={disabled}
               />
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Botón continuar */}
-      <button
-        onClick={onContinue}
-        disabled={!capacidadOk || selectedTables.length === 0}
-        className={`mt-5 w-full py-3 rounded-xl font-semibold text-white transition ${
-          capacidadOk && selectedTables.length > 0
-            ? "bg-red-600 hover:bg-red-700"
-            : "bg-gray-300 cursor-not-allowed"
-        }`}
-      >
-        {capacidadOk
-          ? `Continuar con ${selectedTables.length} mesa${selectedTables.length > 1 ? "s" : ""} →`
-          : `Selecciona mesas (${totalCapacidad}/${guestCount} personas)`}
-      </button>
+      <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-between items-center">
+        <button onClick={onBack} className="text-sm text-gray-500 hover:text-gray-700 underline">
+          ← Cambiar fecha y hora
+        </button>
 
-      <button onClick={onBack} className="mt-3 text-sm text-gray-400 hover:text-gray-600 underline block mx-auto">
-        ← Cambiar número de personas
-      </button>
+        <button
+          onClick={onContinue}
+          disabled={!capacidadCompleta}
+          className={`px-8 py-3 rounded-xl font-semibold text-white transition ${
+            capacidadCompleta ? "bg-red-600 hover:bg-red-700" : "bg-gray-300 cursor-not-allowed"
+          }`}
+        >
+          Continuar
+        </button>
+      </div>
     </div>
   );
 }
