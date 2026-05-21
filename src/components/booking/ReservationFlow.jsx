@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import GuestCountStep from "./GuestCountStep";
-import DateTimeStep from "./DateTimeStep";
+import BookingStep from "./BookingStep";
 import SalonMap from "./SalonMap";
 import ReservationForm from "./ReservationForm";
 import ReservationSuccess from "./ReservationSuccess";
@@ -37,21 +36,13 @@ export default function ReservationFlow() {
 
   const capacidadCompleta = totalCapacidad >= guestCount;
 
-  const handleGuestCount = (count) => {
+  const handleBookingSubmit = ({ guestCount: count, fecha: f, hora: h }) => {
     setGuestCount(count);
-    setFecha("");
-    setHora("");
+    setFecha(f);
+    setHora(h);
     setSelectedTables([]);
-    setOccupiedTableIds([]);
+    loadOccupiedTables(f, h);
     setStep(2);
-  };
-
-  const handleDateTimeContinue = async ({ fecha, hora }) => {
-    setFecha(fecha);
-    setHora(hora);
-    setSelectedTables([]);
-    await loadOccupiedTables(fecha, hora);
-    setStep(3);
   };
 
   const handleSelectTable = (mesa) => {
@@ -71,7 +62,7 @@ export default function ReservationFlow() {
       alert("Selecciona mesas suficientes para cubrir el número de personas.");
       return;
     }
-    setStep(4);
+    setStep(3);
   };
 
   const handleSubmitReservation = async (form) => {
@@ -86,7 +77,7 @@ export default function ReservationFlow() {
     if (conflicto) {
       alert("Una de las mesas seleccionadas ya fue reservada para esa fecha y hora.");
       await loadOccupiedTables(fecha, hora);
-      setStep(3);
+      setStep(2);
       return;
     }
 
@@ -115,7 +106,7 @@ export default function ReservationFlow() {
       hora,
       ...form,
     });
-    setStep(5);
+    setStep(4);
   };
 
   const resetFlow = () => {
@@ -130,17 +121,9 @@ export default function ReservationFlow() {
 
   return (
     <div>
-      {step === 1 && <GuestCountStep onNext={handleGuestCount} />}
+      {step === 1 && <BookingStep onNext={handleBookingSubmit} />}
 
       {step === 2 && (
-        <DateTimeStep
-          guestCount={guestCount}
-          onContinue={handleDateTimeContinue}
-          onBack={() => setStep(1)}
-        />
-      )}
-
-      {step === 3 && (
         <SalonMap
           mesas={mesas}
           guestCount={guestCount}
@@ -152,22 +135,22 @@ export default function ReservationFlow() {
           onContinue={handleGoToForm}
           totalCapacidad={totalCapacidad}
           capacidadCompleta={capacidadCompleta}
-          onBack={() => setStep(2)}
+          onBack={() => setStep(1)}
         />
       )}
 
-      {step === 4 && (
+      {step === 3 && (
         <ReservationForm
           mesas={selectedTables}
           guestCount={guestCount}
           fecha={fecha}
           hora={hora}
           onSubmit={handleSubmitReservation}
-          onBack={() => setStep(3)}
+          onBack={() => setStep(2)}
         />
       )}
 
-      {step === 5 && (
+      {step === 4 && (
         <ReservationSuccess reservation={reservation} onReset={resetFlow} />
       )}
     </div>

@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { getReservas, cancelReserva } from "../../services/reservasService";
+import { getMesas } from "../../services/mesasService";
 
 export default function ReservationsPage() {
   const [reservas, setReservas] = useState([]);
+  const [mesasMap, setMesasMap] = useState({});
   const [filtroEstado, setFiltroEstado] = useState("todas");
   const [filtroFecha, setFiltroFecha] = useState("");
 
-  const load = async () => { const { data } = await getReservas(); setReservas(data || []); };
+  const load = async () => {
+    const [{ data: reservasData }, { data: mesasData }] = await Promise.all([getReservas(), getMesas()]);
+    setReservas(reservasData || []);
+    const map = {};
+    (mesasData || []).forEach((m) => { map[m.id] = m.numero; });
+    setMesasMap(map);
+  };
   useEffect(() => { load(); }, []);
 
   const handleCancel = async (id) => {
@@ -23,7 +31,7 @@ export default function ReservationsPage() {
 
   const estadoColor = {
     activa: "bg-green-100 text-green-700",
-    cancelada: "bg-red-100 text-red-600",
+    cancelada: "bg-orange-100 text-orange-600",
   };
 
   return (
@@ -38,7 +46,7 @@ export default function ReservationsPage() {
         <select
           value={filtroEstado}
           onChange={(e) => setFiltroEstado(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         >
           <option value="todas">Todos los estados</option>
           <option value="activa">Activa</option>
@@ -48,7 +56,7 @@ export default function ReservationsPage() {
           type="date"
           value={filtroFecha}
           onChange={(e) => setFiltroFecha(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
         <button
           onClick={() => { setFiltroEstado("todas"); setFiltroFecha(""); }}
@@ -64,7 +72,7 @@ export default function ReservationsPage() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
-              {["Cliente", "Teléfono", "Correo", "Fecha", "Hora", "Personas", "Estado", "Acciones"].map((h) => (
+              {["Cliente", "Teléfono", "Mesa", "Fecha", "Hora", "Personas", "Estado", "Acciones"].map((h) => (
                 <th key={h} className="px-5 py-3 text-left font-semibold whitespace-nowrap">{h}</th>
               ))}
             </tr>
@@ -74,7 +82,7 @@ export default function ReservationsPage() {
               <tr key={r.id} className="hover:bg-gray-50">
                 <td className="px-5 py-3 font-medium text-gray-800 whitespace-nowrap">{r.cliente_nombre}</td>
                 <td className="px-5 py-3 text-gray-500">{r.cliente_tel}</td>
-                <td className="px-5 py-3 text-gray-500">{r.cliente_email}</td>
+                <td className="px-5 py-3 text-gray-800 font-medium">Mesa {mesasMap[r.mesa_id] ?? r.mesa_id}</td>
                 <td className="px-5 py-3 whitespace-nowrap">{r.fecha}</td>
                 <td className="px-5 py-3 whitespace-nowrap">{r.hora?.slice(0, 5)}</td>
                 <td className="px-5 py-3 text-center">{r.num_personas}</td>
@@ -87,7 +95,7 @@ export default function ReservationsPage() {
                   {r.estado === "activa" && (
                     <button
                       onClick={() => handleCancel(r.id)}
-                      className="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1 rounded-lg text-xs font-medium transition"
+                      className="bg-orange-100 hover:bg-orange-200 text-orange-600 px-3 py-1 rounded-lg text-xs font-medium transition"
                     >
                       Cancelar
                     </button>

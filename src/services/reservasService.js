@@ -6,7 +6,10 @@ export const createReserva = async (payload) => {
 };
 
 export const getReservas = async () => {
-  const { data, error } = await supabase.from("reservas").select("*").order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("reservas")
+    .select("*")
+    .order("created_at", { ascending: false });
   return { data, error };
 };
 

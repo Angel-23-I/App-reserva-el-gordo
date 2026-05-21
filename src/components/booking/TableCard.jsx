@@ -1,16 +1,16 @@
 function TableIllustration({ selected, disabled, occupied, blocked }) {
   const tableFill = selected
-    ? "#F87171"
+    ? "#F59E0B"
     : occupied
-    ? "#FCA5A5"
+    ? "#FDBA74"
     : blocked
     ? "#D1D5DB"
     : "#86EFAC";
 
   const chairFill = selected
-    ? "#DC2626"
+    ? "#D97706"
     : occupied
-    ? "#EF4444"
+    ? "#F97316"
     : blocked
     ? "#9CA3AF"
     : "#22C55E";
@@ -39,7 +39,7 @@ export default function TableCard({ mesa, selected, onSelect, disabled }) {
       onClick={() => !disabled && onSelect(mesa)}
       disabled={disabled}
       className={`rounded-2xl border p-4 flex flex-col items-center justify-center transition w-36 md:w-40
-        ${selected ? "border-red-500 bg-red-50 shadow-lg scale-[1.02]" : "border-gray-200 bg-white hover:shadow-md"}
+        ${selected ? "border-amber-400 bg-amber-50 shadow-lg scale-[1.02]" : "border-amber-200 bg-white hover:shadow-md hover:border-amber-300"}
         ${disabled ? "opacity-70 cursor-not-allowed" : ""}
       `}
       title={`Mesa ${mesa.numero} · ${mesa.capacidad} personas`}
@@ -50,9 +50,9 @@ export default function TableCard({ mesa, selected, onSelect, disabled }) {
         occupied={occupied}
         blocked={blocked}
       />
-      <span className="mt-2 text-sm font-semibold text-gray-800">Mesa {mesa.numero}</span>
-      <span className="text-xs text-gray-500">{mesa.capacidad} personas</span>
-      <span className="text-xs mt-1 capitalize text-gray-400">{mesa.ubicacion}</span>
+      <span className="mt-2 text-sm font-semibold text-amber-800">Mesa {mesa.numero}</span>
+      <span className="text-xs text-amber-600">{mesa.capacidad} personas</span>
+      <span className="text-xs mt-1 capitalize text-amber-600">{mesa.ubicacion}</span>
     </button>
   );
 }

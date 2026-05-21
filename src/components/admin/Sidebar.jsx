@@ -29,7 +29,7 @@ export default function Sidebar() {
             to={link.to}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition ${
-                isActive ? "bg-red-300 text-white" : "text-gray-300 hover:bg-gray-800"
+                isActive ? "bg-amber-500 text-white" : "text-gray-300 hover:bg-gray-800"
               }`
             }
           >

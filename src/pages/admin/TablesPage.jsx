@@ -27,7 +27,7 @@ export default function TablesPage() {
   const handleEdit = (m) => { setForm({ numero: m.numero, capacidad: m.capacidad, ubicacion: m.ubicacion, estado: m.estado }); setEditId(m.id); setShowModal(true); };
   const handleToggle = async (m) => { await updateMesa(m.id, { estado: m.estado === "bloqueada" ? "disponible" : "bloqueada" }); load(); };
 
-  const estadoColor = { disponible: "bg-green-100 text-green-700", ocupada: "bg-red-100 text-red-700", bloqueada: "bg-gray-100 text-gray-500" };
+  const estadoColor = { disponible: "bg-green-100 text-green-700", ocupada: "bg-orange-100 text-orange-700", bloqueada: "bg-gray-100 text-gray-500" };
 
   return (
     <div>
@@ -36,7 +36,7 @@ export default function TablesPage() {
           <h1 className="text-2xl font-bold text-gray-800">Mesas</h1>
           <p className="text-gray-400 text-sm">Gestiona las mesas del restaurante</p>
         </div>
-        <button onClick={() => { setForm(EMPTY); setEditId(null); setShowModal(true); }} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
+        <button onClick={() => { setForm(EMPTY); setEditId(null); setShowModal(true); }} className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
           + Agregar mesa
         </button>
       </div>
@@ -77,17 +77,17 @@ export default function TablesPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-xl">
             <h2 className="text-lg font-bold text-gray-800">{editId ? "Editar mesa" : "Nueva mesa"}</h2>
-            {!editId && <input name="numero" type="number" placeholder="Número de mesa" value={form.numero} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />}
-            <input name="capacidad" type="number" placeholder="Capacidad (personas)" value={form.capacidad} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
-            <input name="ubicacion" placeholder="Ubicación (ej: Zona ventana)" value={form.ubicacion} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
+            {!editId && <input name="numero" type="number" placeholder="Número de mesa" value={form.numero} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />}
+            <input name="capacidad" type="number" placeholder="Capacidad (personas)" value={form.capacidad} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+            <input name="ubicacion" placeholder="Ubicación (ej: Zona ventana)" value={form.ubicacion} onChange={handleChange} required className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
             {editId && (
-              <select name="estado" value={form.estado} onChange={handleChange} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400">
+              <select name="estado" value={form.estado} onChange={handleChange} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="disponible">Disponible</option>
                 <option value="ocupada">Ocupada</option>
                 <option value="bloqueada">Bloqueada</option>
               </select>
             )}
-            <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-xl transition">{editId ? "Guardar cambios" : "Crear mesa"}</button>
+            <button type="submit" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-xl transition">{editId ? "Guardar cambios" : "Crear mesa"}</button>
             <button type="button" onClick={() => setShowModal(false)} className="text-sm text-gray-400 hover:text-gray-600 underline text-center">Cancelar</button>
           </form>
         </div>

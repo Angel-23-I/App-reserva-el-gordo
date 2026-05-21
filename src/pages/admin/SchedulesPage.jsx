@@ -78,7 +78,7 @@ export default function SchedulesPage() {
                     type="time"
                     value={h.hora_inicio}
                     onChange={(e) => handleChange(h.id, "hora_inicio", e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                   />
                 </div>
                 <div>
@@ -87,7 +87,7 @@ export default function SchedulesPage() {
                     type="time"
                     value={h.hora_fin}
                     onChange={(e) => handleChange(h.id, "hora_fin", e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                   />
                 </div>
               </div>
@@ -98,7 +98,7 @@ export default function SchedulesPage() {
                 className={`w-full py-2 rounded-xl text-sm font-semibold transition ${
                   saved === h.id
                     ? "bg-green-500 text-white"
-                    : "bg-red-600 hover:bg-red-700 text-white"
+                    : "bg-amber-500 hover:bg-amber-600 text-white"
                 }`}
               >
                 {saved === h.id ? "✓ Guardado" : "Guardar"}
